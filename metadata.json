@@ -1,0 +1,6 @@
+{
+  "name": "Tembea360",
+  "description": "Discover Kenya's Coast - authentic destinations, local tourism businesses, and experiences across Mombasa, Diani, Watamu, and Lamu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

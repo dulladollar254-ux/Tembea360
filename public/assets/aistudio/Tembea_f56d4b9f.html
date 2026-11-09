@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tembea360 | Discover Kenya</title>
+
+<style>
+:root {
+  --green: #16834a;
+  --dark: #103c2a;
+  --light: #f2f8f3;
+  --white: #ffffff;
+  --text: #24352b;
+  --muted: #68776d;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Arial, sans-serif;
+  background: var(--light);
+  color: var(--text);
+  line-height: 1.6;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+header {
+  background: var(--white);
+  padding: 15px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 12px #0000000c;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.logo { color: var(--green); font-size: 25px; font-weight: 800; }
+.logo span { color: var(--dark); }
+nav { display: flex; gap: 8px; flex-wrap: wrap; }
+nav button {
+  border: 0; background: transparent; padding: 9px 12px;
+  border-radius: 8px; color: var(--text);
+}
+nav button:hover, nav button.active { background: #e4f3e8; color: var(--green); }
+.container { width: min(1120px, 92%); margin: auto; }
+.page { display: none; padding: 32px 0 55px; }
+.page.active { display: block; }
+.hero {
+  padding: 65px 7%; border-radius: 22px; color: white;
+  background: linear-gradient(120deg, #103c2aee, #16834acb),
+    url("https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1600&q=80") center/cover;
+}
+.hero h1 { font-size: clamp(35px, 6vw, 58px); line-height: 1.12; max-width: 700px; }
+.hero p { max-width: 600px; margin: 18px 0 25px; }
+.btn {
+  display: inline-block; border: 0; border-radius: 9px;
+  padding: 11px 17px; background: var(--green); color: white;
+  font-weight: 700; text-decoration: none;
+}
+.btn:hover { filter: brightness(.92); }
+.btn.light { background: white; color: var(--dark); }
+.btn.secondary { background: #e5f3e9; color: var(--green); }
+.btn.danger { background: #b63838; }
+.section-title { margin: 28px 0 16px; }
+.section-title h2 { font-size: 27px; }
+.muted { color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 20px; }
+.card {
+  background: white; border-radius: 15px; overflow: hidden;
+  box-shadow: 0 4px 16px #163b2610;
+}
+.card img { width: 100%; height: 175px; object-fit: cover; display: block; }
+.card-body { padding: 17px; }
+.card-body h3 { margin-bottom: 5px; }
+.card-body p { margin: 7px 0; }
+.card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.panel {
+  background: white; padding: 25px; border-radius: 15px;
+  box-shadow: 0 4px 16px #163b2610; margin-bottom: 20px;
+}
+.form-wrap { max-width: 560px; margin: 0 auto; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { margin-bottom: 14px; }
+.field.full { grid-column: 1 / -1; }
+label { display: block; font-weight: 700; margin-bottom: 5px; }
+input, select, textarea {
+  width: 100%; border: 1px solid #d4dfd6; border-radius: 8px;
+  padding: 11px; background: white; color: var(--text);
+}
+textarea { min-height: 90px; resize: vertical; }
+.notice { background: #fff6d9; border-radius: 10px; padding: 12px; margin: 14px 0; font-size: 14px; }
+.status { margin: 12px 0; color: var(--green); font-weight: 700; }
+.empty { padding: 30px; text-align: center; color: var(--muted); background: white; border-radius: 12px; }
+footer { background: var(--dark); color: white; padding: 25px 5%; text-align: center; }
+.hidden { display: none !important; }
+.badge { display: inline-block; background: #e5f3e9; color: var(--green); padding: 3px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+@media (max-width: 600px) {
+  header { justify-content: center; }
+  nav { justify-content: center; }
+  .hero { padding: 40px 7%; }
+  .form-grid { grid-template-columns: 1fr; }
+  .field.full { grid-column: auto; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">Tembea<span>360</span> </div>
+  <nav>
+    <button class="active" data-page="home">Home</button>
+    <button data-page="explore">Explore</button>
+    <button data-page="cart">Cart (<span id="cartCount">0</span>)</button>
+    <button data-page="profile">Profile</button>
+    <button id="businessNav" data-page="business" class="hidden">Business dashboard</button>
+    <button id="accountNav" data-page="account">Login / Sign up</button>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- HOME -->
+  <section id="home" class="page active">
+    <div class="hero">
+      <h1>Discover Kenya, one journey at a time.</h1>
+      <p>Explore beautiful destinations, discover local experiences, and connect with tourism businesses along Kenya's Coast.</p>
+      <button class="btn light" onclick="showPage('explore')">Explore destinations</button>
+      <button class="btn" onclick="showPage('account')">Join Tembea360</button>
+    </div>
+
+    <div class="section-title">
+      <h2>Popular coastal destinations</h2>
+      <p class="muted">Start exploring Mombasa, Diani, and Watamu.</p>
+    </div>
+    <div id="homeDestinations" class="grid"></div>
+
+    <div class="panel" style="margin-top:28px">
+      <h2>Are you a tourism business?</h2>
+      <p>Register your business account to publish destinations and introduce your services to travellers.</p>
+      <button class="btn" onclick="openBusinessSignup()">Register your business</button>
+    </div>
+  </section>
+
+  <!-- EXPLORE -->
+  <section id="explore" class="page">
+    <div class="section-title">
+      <h2>Explore destinations</h2>
+      <p class="muted">Find places and experiences offered by local tourism businesses.</p>
+    </div>
+    <div class="field">
+      <input id="searchInput" placeholder="Search destinations, locations or activities..." oninput="renderDestinations()">
+    </div>
+    <div class="field">
+      <select id="locationFilter" onchange="renderDestinations()">
+        <option value="">All locations</option>
+        <option>Mombasa</option>
+        <option>Diani</option>
+        <option>Watamu</option>
+      </select>
+    </div>
+    <div id="destinationGrid" class="grid"></div>
+  </section>
+
+  <!-- CART -->
+  <section id="cart" class="page">
+    <div class="section-title">
+      <h2>Your cart</h2>
+      <p class="muted">Review your selected destinations before sending a booking request.</p>
+    </div>
+    <div id="cartItems"></div>
+    <div id="cartSummary" class="panel hidden">
+      <h3>Booking request</h3>
+      <p class="muted">This prototype sends a demo request only. It does not process payments or confirm a real booking.</p>
+      <div class="field" style="margin-top:14px">
+        <label for="travelDate">Preferred visit date</label>
+        <input id="travelDate" type="date">
+      </div>
+      <div class="field">
+        <label for="bookingNote">Message to the business (optional)</label>
+        <textarea id="bookingNote" placeholder="Tell the business about your plans..."></textarea>
+      </div>
+      <button class="btn" onclick="submitBooking()">Submit demo booking request</button>
+      <p id="bookingStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section id="account" class="page">
+    <div class="panel form-wrap">
+      <h2>Welcome to Tembea360</h2>
+      <p class="muted">Log in or create your account.</p>
+      <div class="notice">Demo only: use a test password, not a real password. This browser prototype is not secure authentication.</div>
+
+      <div class="field">
+        <label>Choose an option</label>
+        <select id="authMode" onchange="renderAuthMode()">
+          <option value="login">Log in</option>
+          <option value="signup">Create tourist account</option>
+          <option value="business">Register tourism business</option>
+        </select>
+      </div>
+
+      <form id="authForm">
+        <div id="signupFields" class="hidden">
+          <div class="field">
+            <label for="fullName">Full name</label>
+            <input id="fullName" autocomplete="name" placeholder="Your full name">
+          </div>
+          <div class="field">
+            <label for="accountType">Account type</label>
+            <select id="accountType">
+              <option value="tourist">Tourist / traveller</option>
+              <option value="business">Local tourism business</option>
+            </select>
+          </div>
+          <div class="field hidden" id="businessNameField">
+            <label for="businessName">Business name</label>
+            <input id="businessName" placeholder="Your registered or trading name">
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" type="email" autocomplete="email" required placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required minlength="4" placeholder="At least 4 characters">
+        </div>
+        <button class="btn" type="submit" id="authSubmit">Log in</button>
+      </form>
+      <p id="authStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profile" class="page">
+    <div class="section-title"><h2>Your profile</h2></div>
+    <div id="profileContent"></div>
+  </section>
+
+  <!-- BUSINESS DASHBOARD -->
+  <section id="business" class="page">
+    <div class="section-title">
+      <h2>Business dashboard</h2>
+      <p class="muted">Publish a destination for travellers to discover.</p>
+    </div>
+    <div id="businessAccess"></div>
+    <div id="businessTools" class="hidden">
+      <div class="panel">
+        <h3>Add a destination</h3>
+        <form id="destinationForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="destName">Destination / experience name</label>
+              <input id="destName" required placeholder="e.g. Old Town walking tour">
+            </div>
+            <div class="field">
+              <label for="destLocation">Location</label>
+              <select id="destLocation" required>
+                <option value="">Choose location</option>
+                <option>Mombasa</option>
+                <option>Diani</option>
+                <option>Watamu</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="destPrice">Indicative price (KSh)</label>
+              <input id="destPrice" type="number" min="0" required placeholder="e.g. 1500">
+            </div>
+            <div class="field">
+              <label for="destImage">Image URL (optional)</label>
+              <input id="destImage" type="url" placeholder="https://example.com/photo.jpg">
+            </div>
+            <div class="field full">
+              <label for="destDescription">Description</label>
+              <textarea id="destDescription" required placeholder="Describe the destination or experience..."></textarea>
+            </div>
+          </div>
+          <button class="btn" type="submit">Publish destination</button>
+          <p id="destStatus" class="status"></p>
+        </form>
+      </div>
+      <div class="section-title"><h3>Your published destinations</h3></div>
+      <div id="myDestinations" class="grid"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>Tembea360</strong>
+  <p>Discover more. Travel local. Experience Kenya.</p>
+  <small>Prototype for demonstration. Real booking, payments and secure accounts are not enabled.</small>
+</footer>
+
+<script>
+const STORAGE_KEY = "tembea360_demo_data_v1";
+
+const starterDestinations = [
+  {
+    id: "sample1", name: "Mombasa Old Town",
+    location: "Mombasa", price: 1200,
+    description: "Discover historic streets, Swahili architecture and the rich culture of Mombasa.",
+    image: "https://images.unsplash.com/photo-1596005554384-d293674c91d7?auto=format&fit=crop&w=900&q=80",
+    owner: "Tembea360 Demo"
+  },
+  {
+    id: "sample2", name: "Diani Beach Escape",
+    location: "Diani", price: 2500,
+    description: "Enjoy the beautiful coastline, white sand and a relaxing beach experience.",
+    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80",
+    owner: "Tembea360 Demo"
+  },
+  {
+    id: "sample3", name: "Watamu Marine Adventure",
+    location: "Watamu", price: 1800,
+    description: "Explore Watamu's coastal scenery and discover its marine environment.",
+    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=900&q=80",
+    owner: "Tembea360 Demo"
+  }
+];
+
+function loadData() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && Array.isArray(saved.users) && Array.isArray(saved.destinations)) {
+      return saved;
+    }
+  } catch (error) {}
+  return { users: [], destinations: starterDestinations, cart: [], bookings: [] };
+}
+
+let data = loadData();
+let currentUser = null;
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+function safeImage(url) {
+  if (typeof url === "string" && /^https?:\/\//i.test(url)) return url;
+  return "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80";
+}
+
+function showPage(pageName) {
+  if (pageName === "business" && (!currentUser || currentUser.type !== "business")) {
+    document.getElementById("businessAccess").innerHTML =
+      '<div class="panel"><h3>Business account required</h3><p>Log in with a tourism business account to manage destinations.</p><button class="btn" onclick="openBusinessSignup()">Register business</button> <button class="btn secondary" onclick="showPage(\'account\')">Log in</button></div>';
+    document.getElementById("businessTools").classList.add("hidden");
+  }
+
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageName).classList.add("active");
+  document.querySelectorAll("nav button[data-page]").forEach(b => {
+    b.classList.toggle("active", b.dataset.page === pageName);
+  });
+
+  if (pageName === "explore") renderDestinations();
+  if (pageName === "cart") renderCart();
+  if (pageName === "profile") renderProfile();
+  if (pageName === "business") renderBusiness();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll("nav button[data-page]").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+function destinationCard(d, businessView = false) {
+  return `
+    <article class="card">
+      <img src="${escapeHTML(safeImage(d.image))}" alt="${escapeHTML(d.name)}"
+        onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80'">
+      <div class="card-body">
+        <span class="badge">${escapeHTML(d.location)}</span>
+        <h3>${escapeHTML(d.name)}</h3>
+        <p>${escapeHTML(d.description)}</p>
+        <p><strong>KSh ${Number(d.price).toLocaleString("en-KE")}</strong> <span class="muted">indicative price</span></p>
+        <p class="muted">Provided by ${escapeHTML(d.owner || "Local business")}</p>
+        <div class="card-actions">
+          ${businessView
+            ? `<button class="btn danger" onclick="deleteDestination('${escapeHTML(d.id)}')">Delete</button>`
+            : `<button class="btn" onclick="addToCart('${escapeHTML(d.id)}')">Add to cart</button>`}
+        </div>
+      </div>
+    </article>`;
+}
+
+function renderDestinations() {
+  const search = (document.getElementById("searchInput")?.value || "").toLowerCase();
+  const location = document.getElementById("locationFilter")?.value || "";
+  const matches = data.destinations.filter(d =>
+    (!location || d.location === location) &&
+    [d.name, d.location, d.description, d.owner].some(v => String(v || "").toLowerCase().includes(search))
+  );
+
+  document.getElementById("destinationGrid").innerHTML = matches.length
+    ? matches.map(d => destinationCard(d)).join("")
+    : '<div class="empty">No destinations found. Try another search.</div>';
+}
+
+function renderHome() {
+  document.getElementById("homeDestinations").innerHTML =
+    data.destinations.slice(0, 3).map(d => destinationCard(d)).join("");
+}
+
+function addToCart(id) {
+  const d = data.destinations.find(item => item.id === id);
+  if (!d) return;
+  data.cart.push(id);
+  saveData();
+  updateNavigation();
+  alert("Destination added to your cart!");
+}
+
+function renderCart() {
+  const items = data.cart.map(id => data.destinations.find(d => d.id === id)).filter(Boolean);
+  const holder = document.getElementById("cartItems");
+  const summary = document.getElementById("cartSummary");
+
+  if (!items.length) {
+    holder.innerHTML = '<div class="empty"><h3>Your cart is empty</h3><p>Explore destinations and add one to get started.</p><button class="btn" onclick="showPage(\'explore\')">Explore destinations</button></div>';
+    summary.classList.add("hidden");
+    return;
+  }
+
+  holder.innerHTML = `<div class="grid">${items.map((d, index) => `
+    <article class="card">
+      <img src="${escapeHTML(safeImage(d.image))}" alt="${escapeHTML(d.name)}">
+      <div class="card-body">
+        <h3>${escapeHTML(d.name)}</h3>
+        <p>${escapeHTML(d.location)}</p>
+        <p><strong>KSh ${Number(d.price).toLocaleString("en-KE")}</strong></p>
+        <button class="btn danger" onclick="removeFromCart(${index})">Remove</button>
+      </div>
+    </article>`).join("")}</div>
+    <div class="panel" style="margin-top:18px"><h3>Estimated total: KSh ${items.reduce((sum,d)=>sum+Number(d.price),0).toLocaleString("en-KE")}</h3><p class="muted">Final prices and availability must be confirmed with the business.</p></div>`;
+  summary.classList.remove("hidden");
+}
+
+function removeFromCart(index) {
+  data.cart.splice(index, 1);
+  saveData();
+  updateNavigation();
+  renderCart();
+}
+
+function submitBooking() {
+  if (!currentUser) {
+    document.getElementById("bookingStatus").textContent = "Please log in or create an account before submitting a request.";
+    showPage("account");
+    return;
+  }
+  const items = data.cart.map(id => data.destinations.find(d => d.id === id)).filter(Boolean);
+  if (!items.length) return;
+
+  data.bookings.push({
+    id: Date.now(),
+    email: currentUser.email,
+    destinations: items.map(d => d.name),
+    date: document.getElementById("travelDate").value,
+    note: document.getElementById("bookingNote").value,
+    status: "Demo request"
+  });
+  data.cart = [];
+  saveData();
+  updateNavigation();
+  renderCart();
+  document.getElementById("bookingStatus").textContent = "Your demo request has been saved in this browser. No business has been contacted.";
+}
+
+function renderAuthMode() {
+  const mode = document.getElementById("authMode").value;
+  const signup = mode !== "login";
+  document.getElementById("signupFields").classList.toggle("hidden", !signup);
+  document.getElementById("businessNameField").classList.toggle("hidden", mode !== "business");
+  document.getElementById("authSubmit").textContent =
+    mode === "login" ? "Log in" : mode === "business" ? "Register business" : "Create tourist account";
+  if (mode === "business") document.getElementById("accountType").value = "business";
+  else if (mode === "signup") document.getElementById("accountType").value = "tourist";
+}
+
+function openBusinessSignup() {
+  showPage("account");
+  document.getElementById("authMode").value = "business";
+  renderAuthMode();
+}
+
+document.getElementById("authMode").addEventListener("change", renderAuthMode);
+
+document.getElementById("authForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+  const mode = document.getElementById("authMode").value;
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const status = document.getElementById("authStatus");
+
+  if (mode === "login") {
+    const user = data.users.find(u => u.email === email && u.password === password);
+    if (!user) {
+      status.textContent = "Account not found or password is incorrect.";
+      return;
+    }
+    currentUser = user;
+    status.textContent = "Logged in successfully.";
+    updateNavigation();
+    setTimeout(() => showPage(user.type === "business" ? "business" : "profile"), 300);
+    return;
+  }
+
+  const name = document.getElementById("fullName").value.trim();
+  const type = mode === "business" ? "business" : document.getElementById("accountType").value;
+  const businessName = document.getElementById("businessName").value.trim();
+
+  if (!name) {
+    status.textContent = "Please enter your name.";
+    return;
+  }
+  if (type === "business" && !businessName) {
+    status.textContent = "Please enter your business name.";
+    return;
+  }
+  if (data.users.some(u => u.email === email)) {
+    status.textContent = "An account with this email already exists. Please log in.";
+    return;
+  }
+
+  const user = {
+    id: Date.now(),
+    name,
+    email,
+    password,
+    type,
+    businessName: type === "business" ? businessName : ""
+  };
+  data.users.push(user);
+  saveData();
+  currentUser = user;
+  status.textContent = "Account created! Welcome to Tembea360.";
+  updateNavigation();
+  setTimeout(() => showPage(type === "business" ? "business" : "profile"), 400);
+});
+
+function updateNavigation() {
+  document.getElementById("cartCount").textContent = data.cart.length;
+  document.getElementById("accountNav").textContent = currentUser ? "My account" : "Login / Sign up";
+  document.getElementById("businessNav").classList.toggle("hidden", !(currentUser && currentUser.type === "business"));
+  renderHome();
+}
+
+function renderProfile() {
+  const holder = document.getElementById("profileContent");
+  if (!currentUser) {
+    holder.innerHTML = `<div class="panel"><h3>You are not logged in</h3><p>Log in or create an account to view your profile and booking requests.</p><button class="btn" onclick="showPage('account')">Log in / Sign up</button></div>`;
+    return;
+  }
+
+  const bookings = data.bookings.filter(b => b.email === currentUser.email);
+  holder.innerHTML = `
+    <div class="panel">
+      <span class="badge">${currentUser.type === "business" ? "Tourism business" : "Tourist account"}</span>
+      <h2 style="margin-top:12px">${escapeHTML(currentUser.name)}</h2>
+      <p>${escapeHTML(currentUser.email)}</p>
+      ${currentUser.type === "business" ? `<p>Business: ${escapeHTML(currentUser.businessName)}</p><button class="btn" onclick="showPage('business')">Open dashboard</button>` : ""}
+      <button class="btn danger" onclick="logout()" style="margin-top:12px">Log out</button>
+    </div>
+    <div class="panel">
+      <h3>Your demo booking requests</h3>
+      ${bookings.length ? bookings.map(b => `<div style="padding:12px 0;border-bottom:1px solid #eee"><strong>${escapeHTML(b.destinations.join(", "))}</strong><p class="muted">Preferred date: ${escapeHTML(b.date || "Not selected")} · ${escapeHTML(b.status)}</p></div>`).join("") : '<p class="muted">You have not submitted any booking requests yet.</p>'}
+    </div>`;
+}
+
+function logout() {
+  currentUser = null;
+  updateNavigation();
+  showPage("home");
+}
+
+function renderBusiness() {
+  const access = document.getElementById("businessAccess");
+  const tools = document.getElementById("businessTools");
+  if (!currentUser || currentUser.type !== "business") {
+    tools.classList.add("hidden");
+    access.innerHTML = `<div class="panel"><h3>Business login required</h3><p>Register or log in with a tourism business account to publish destinations.</p><button class="btn" onclick="openBusinessSignup()">Register business</button> <button class="btn secondary" onclick="showPage('account')">Log in</button></div>`;
+    return;
+  }
+  access.innerHTML = `<div class="panel"><h3>Welcome, ${escapeHTML(currentUser.businessName)}</h3><p>You can add and remove destinations linked to your demo business account.</p></div>`;
+  tools.classList.remove("hidden");
+  const mine = data.destinations.filter(d => d.ownerEmail === currentUser.email);
+  document.getElementById("myDestinations").innerHTML = mine.length
+    ? mine.map(d => destinationCard(d, true)).join("")
+    : '<div class="empty">You have not published any destinations yet.</div>';
+}
+
+document.getElementById("destinationForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+  if (!currentUser || currentUser.type !== "business") return;
+
+  const destination = {
+    id: "dest_" + Date.now(),
+    name: document.getElementById("destName").value.trim(),
+    location: document.getElementById("destLocation").value,
+    price: Number(document.getElementById("destPrice").value),
+    image: document.getElementById("destImage").value.trim(),
+    description: document.getElementById("destDescription").value.trim(),
+    owner: currentUser.businessName,
+    ownerEmail: currentUser.email
+  };
+
+  data.destinations.unshift(destination);
+  saveData();
+  this.reset();
+  document.getElementById("destStatus").textContent = "Destination published in this browser prototype.";
+  renderBusiness();
+  renderHome();
+});
+
+function deleteDestination(id) {
+  if (!currentUser || currentUser.type !== "business") return;
+  const d = data.destinations.find(item => item.id === id);
+  if (!d || d.ownerEmail !== currentUser.email) return;
+  if (!confirm("Delete this destination?")) return;
+  data.destinations = data.destinations.filter(item => item.id !== id);
+  data.cart = data.cart.filter(itemId => itemId !== id);
+  saveData();
+  updateNavigation();
+  renderBusiness();
+  renderDestinations();
+}
+
+renderAuthMode();
+updateNavigation();
+renderDestinations();
+</script>
+</body>
+</html>
